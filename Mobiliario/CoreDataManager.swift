@@ -48,6 +48,40 @@ class CoreDataManager {
             return[]
         }
     }
+
+    func leerMobiliario(id:String) -> Mobiliario?{
+        let fetchRequest : NSFetchRequest<Mobiliario> = Mobiliario.fetchRequest()
+        let predicate = NSPredicate(format: "id = %@", id)
+        fetchRequest.predicate = predicate
+        
+        do{
+            let datos = try persistentContainer.viewContext.fetch(fetchRequest)
+            return datos.first
+            }
+        catch{
+            print("No se puede leer ese dato")
+        }
+        return nil
+    }
+
+    func actualizarMobiliario(Mobiliario: Mobiliario){
+        let fetchRequest : NSFetchRequest<Mobiliario> = Mobiliario.fetchRequest()
+        let predicate = NSPredicate(format: "id = %@", Mobiliario.id ?? "")
+        fetchRequest.predicate = predicate
+        
+        do{
+            let datos = try persistentContainer.viewContext.fetch(fetchRequest)
+            let v = datos.first
+            v?.nombre = Mobiliario.nombre
+            v?.precioUnitario = Mobiliario.precioUnitario
+            v?.existencia = Mobiliario.existencia
+            v?.categoria = Mobiliario.categoria
+            try persistentContainer.viewContext.save()
+            print("Mobiliario actualizado")
+        }catch{
+            print("no se pudo actualizar")
+        }
+    }
     
     func borrarMobiliario(Mobiliario:Mobiliario){
         persistentContainer.viewContext.delete(Mobiliario)
